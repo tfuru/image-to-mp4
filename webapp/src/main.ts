@@ -6,6 +6,10 @@ import vuetify from "./plugins/vuetify";
 
 Vue.config.productionTip = false;
 
+import firebase from "./plugins/firebase";
+firebase.init();
+firebase.onAuth();
+
 new Vue({
   router,
   store,

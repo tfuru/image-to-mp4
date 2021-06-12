@@ -5,23 +5,23 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    email: "",
-    status: false,
+    user: {},
+    isSignIn: false,
   },
   getters: {
-    email(state) {
-      return state.email;
+    user(state) {
+      return state.user;
     },
-    isSignedIn(state) {
-      return state.status;
+    isSignIn(state) {
+      return state.isSignIn;
     },
   },
   mutations: {
-    onAuthEmailChanged(state, email) {
-      state.email = email; //firebase user情報
+    setUser(state, user) {
+      state.user = user;
     },
-    onUserStatusChanged(state, status) {
-      state.status = status;
+    setSignIn(state, isSignIn) {
+      state.isSignIn = isSignIn;
     },
   },
   actions: {},
