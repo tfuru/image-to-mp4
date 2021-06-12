@@ -57,6 +57,7 @@ exports.imageToMp4 = functions.storage.object().onFinalize(async (object) => {
   const tempImageFilePath = path.join(os.tmpdir(), imageFileName);
   const tmpDir = path.dirname(tempImageFilePath);
   const tempMp4FilePath = path.join(os.tmpdir(), mp4FileName);
+  const uploadMp4FilePath = filePath.replace(ext, ".mp4");
 
   // tmp ディレクトリ 作成
   await mkdirp(tmpDir);
@@ -70,6 +71,7 @@ exports.imageToMp4 = functions.storage.object().onFinalize(async (object) => {
   functions.logger.log("tmpDir", tmpDir);
   functions.logger.log("tempImageFilePath", tempImageFilePath);
   functions.logger.log("tempMp4FilePath", tempMp4FilePath);
+  functions.logger.log("uploadMp4FilePath", uploadMp4FilePath);
 
   if (fs.existsSync(tempImageFilePath) == false) {
     // ダウンロードされていない
@@ -104,6 +106,7 @@ exports.imageToMp4 = functions.storage.object().onFinalize(async (object) => {
           functions.logger.log(stdout);
           // tempMp4FilePath を bucket に アップロードする
           await bucket.upload(tempMp4FilePath, {
+            destination: uploadMp4FilePath,
             metadata: metadata,
           });
           // 変換処理が終わったらテンポラリファイルを削除
