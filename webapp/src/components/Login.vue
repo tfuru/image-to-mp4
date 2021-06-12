@@ -10,7 +10,6 @@
 
 <script lang="ts">
 import Vue from "vue";
-import store from '@/store';
 import firebase from "firebase/app";
 import "firebase/auth";
 
@@ -20,24 +19,23 @@ import "firebaseui-ja/dist/firebaseui.css";
 export default Vue.extend({
   name: "Login",
   data: () => ({
-      message: "ログイン",
+    message: "ログイン",
   }),
   mounted: () => {
     const uiConfig = {
       signInFlow: "popup",
       signInSuccessUrl: "/",
       signInOptions: [
-          {
-            provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
-            requireDisplayName: false,
-          },
+        {
+          provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
+          requireDisplayName: false,
+        },
       ],
       tosUrl: "/terms",
-      privacyPolicyUrl: "/privacy"
+      privacyPolicyUrl: "/privacy",
     };
-    
     const ui = firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(firebase.auth());
-    ui.start('#firebaseui-auth-container', uiConfig);
+    ui.start("#firebaseui-auth-container", uiConfig);
   },
 });
 </script>

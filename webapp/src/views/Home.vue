@@ -1,6 +1,9 @@
 <template>
   <login v-if="isLogin == false" />
-  <logout v-else />
+  <div v-else>
+    <file-upload />
+    <logout />
+  </div>
 </template>
 
 <script lang="ts">
@@ -9,6 +12,7 @@ import store from "../store";
 
 import Login from "@/components/Login.vue";
 import Logout from "@/components/Logout.vue";
+import FileUpload from "@/components/FileUpload.vue";
 
 export default Vue.extend({
   name: "Home",
@@ -18,6 +22,7 @@ export default Vue.extend({
   components: {
     Login,
     Logout,
+    FileUpload,
   },
   computed: {
     isLogin() {
