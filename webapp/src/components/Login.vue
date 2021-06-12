@@ -14,8 +14,8 @@ import store from '@/store';
 import firebase from "firebase/app";
 import "firebase/auth";
 
-import * as firebaseui from 'firebaseui';
-require("firebaseui-ja/dist/firebaseui.css");
+import * as firebaseui from "firebaseui-ja";
+import "firebaseui-ja/dist/firebaseui.css";
 
 export default Vue.extend({
   name: "Login",
@@ -23,7 +23,6 @@ export default Vue.extend({
       message: "ログイン",
   }),
   mounted: () => {
-    console.log("mounted", this);
     const uiConfig = {
       signInFlow: "popup",
       signInSuccessUrl: "/",

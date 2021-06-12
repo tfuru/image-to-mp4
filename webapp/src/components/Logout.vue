@@ -3,7 +3,6 @@
     <v-row class="text-center">
       <v-col cols="12">
         <h1>Logout</h1>
-        <p>{{ message }}</p>
         <v-btn elevation="2" x-large @click="clickLogout">ログアウト</v-btn>
       </v-col>
     </v-row>
