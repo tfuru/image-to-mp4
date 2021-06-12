@@ -109,6 +109,27 @@ exports.imageToMp4 = functions.storage.object().onFinalize(async (object) => {
             destination: uploadMp4FilePath,
             metadata: metadata,
           });
+
+          // Firestore に書き込む
+          const userUid = filePath.replace("/" + imageFileName, "");
+          const now = (new Date()).getTime();
+
+          // https://firebasestorage.googleapis.com/v0/b/
+          // image-to-mp4.appspot.com
+          // /o/XVQWN1e59IdcOWf5taDtxRwZrn92%2F1280x720.mp4?alt=media
+          const imgDownloadUrl = `https://firebasestorage.googleapis.com/v0/b/${fileBucket}/o/${encodeURIComponent(filePath)}?alt=media`;
+          const mp4DownloadUrl = `https://firebasestorage.googleapis.com/v0/b/${fileBucket}/o/${encodeURIComponent(uploadMp4FilePath)}?alt=media`;
+          functions.logger.log("imgDownloadUrl", imgDownloadUrl);
+          functions.logger.log("mp4DownloadUrl", mp4DownloadUrl);
+
+          const data = {
+            uid: userUid,
+            img: imgDownloadUrl,
+            mp4: mp4DownloadUrl,
+            datetime: now,
+          };
+          await admin.firestore().collection(userUid).add(data);
+
           // 変換処理が終わったらテンポラリファイルを削除
           fs.unlinkSync(tempImageFilePath);
           resolut("ok");

@@ -2,22 +2,6 @@
   <v-container>
     <v-row class="text-center">
       <v-col cols="12">
-        <h1>ImageToMp4</h1>
-        <div class="d-flex flex-column justify-space-between align-center">
-          <v-img
-            alt="ImageToMp4"
-            class="shrink mr-2"
-            contain
-            src="ImageToMp4.png"
-            transition="scale-transition"
-            width="300"
-          />
-        </div>
-        <p>画像(png,jpeg) をアップロードすると <br />MP4 ダウンロード用URLを生成するサービスです</p>        
-      </v-col>
-    </v-row>  
-    <v-row class="text-center">
-      <v-col cols="12">
         <v-file-input
             label="File input"
             truncate-length="15" 
@@ -56,7 +40,8 @@
                 color="green"></v-progress-linear>
             <v-input 
                 hint="MP4 URL"
-                persistent-hint 
+                persistent-hint
+                @click="clickMp4Url"
                 >{{mp4Src}}</v-input>
         </div>
       </v-col>
@@ -80,6 +65,8 @@ export default Vue.extend({
     clickFile() {
       this.imgSrc = "";
       this.mp4Src = "";
+      this.isMp4Progress = false;
+      this.isImageProgress = false;
     },
     changeFile(file: File) {
       console.log("changeFile", file);
@@ -98,9 +85,12 @@ export default Vue.extend({
       this.isImageProgress = true;
       firebase.fileUpload(file,(snapshot) => {
         console.log("snapshot", snapshot);
-        // 画像　アップロード 完了
         this.isImageProgress = false;
       });
+    },
+    clickMp4Url(event: any) {
+      console.log("event", event.target);
+      // event.target.select();
     },
     onSnapshot() {
         // 初回だけ監視を実行

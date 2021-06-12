@@ -1,6 +1,10 @@
 <template>
-  <login v-if="isLogin == false" />
+  <div v-if="isLogin == false">
+    <common-header />
+    <login />
+  </div>
   <div v-else>
+    <common-header />
     <file-upload />
     <logout />
   </div>
@@ -10,6 +14,7 @@
 import Vue from "vue";
 import store from "../store";
 
+import CommonHeader from "@/components/CommonHeader.vue";
 import Login from "@/components/Login.vue";
 import Logout from "@/components/Logout.vue";
 import FileUpload from "@/components/FileUpload.vue";
@@ -20,6 +25,7 @@ export default Vue.extend({
     message: "",
   }),
   components: {
+    CommonHeader,
     Login,
     Logout,
     FileUpload,
