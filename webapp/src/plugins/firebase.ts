@@ -40,13 +40,14 @@ export default {
       return;
     }
 
-    /*
     firebase.firestore()
       .collection(user?.uid)
       .onSnapshot(callback);
-    */
+      
+    /*
     firebase.firestore()
       .collection("tfuru")
       .onSnapshot(callback);
+    */
   },
 };
