@@ -63,7 +63,7 @@ exports.imageToMp4 = functions.storage.object().onFinalize(async (object) => {
   await mkdirp(tmpDir);
   if (fs.existsSync(tmpDir) == false) {
     // tmp ディレクトリ 作成失敗
-    return functions.logger.log("tmpDir is not found");
+    return functions.logger.error("tmpDir is not found");
   }
 
   // アップロードされたファイルをtmp ディレクトリに Download する
@@ -75,7 +75,7 @@ exports.imageToMp4 = functions.storage.object().onFinalize(async (object) => {
 
   if (fs.existsSync(tempImageFilePath) == false) {
     // ダウンロードされていない
-    return functions.logger.log("tempImageFilePath is not found");
+    return functions.logger.error("tempImageFilePath is not found");
   }
 
   const uuid = uuidv4();
@@ -86,6 +86,11 @@ exports.imageToMp4 = functions.storage.object().onFinalize(async (object) => {
     },
   };
   functions.logger.log("metadata", metadata);
+
+  // Firestore に書き込む
+  const userUid = filePath.replace("/" + imageFileName, "");
+  const now = (new Date()).getTime();
+
   // tempFilePath を ffmpg で mp4 に変換 して bucket に アップロードする
   // ffmpeg -r 1 -i 239476.png -loop 0 -vcodec libx264
   //   -pix_fmt yuv420p -r 60 out.mp4
@@ -112,6 +117,22 @@ exports.imageToMp4 = functions.storage.object().onFinalize(async (object) => {
           "-me_range 16",
           "-i_qfactor 0.714286",
         ])
+        .on("error", async (error, stdout, stderr) => {
+          functions.logger.error("error", error);
+
+          // 変換できなかった時 エラー をDBに追加する
+          const data = {
+            uid: userUid,
+            img: "",
+            mp4: "",
+            error: error.message,
+            datetime: now,
+          };
+          functions.logger.error("error data", data);
+          await admin.firestore().collection(userUid).add(data);
+
+          reject(error);
+        })
         .on("end", async (error, stdout) => {
           functions.logger.log(stdout);
           // tempMp4FilePath を bucket に アップロードする
@@ -119,10 +140,6 @@ exports.imageToMp4 = functions.storage.object().onFinalize(async (object) => {
             destination: uploadMp4FilePath,
             metadata: metadata,
           });
-
-          // Firestore に書き込む
-          const userUid = filePath.replace("/" + imageFileName, "");
-          const now = (new Date()).getTime();
 
           // https://firebasestorage.googleapis.com/v0/b/
           // image-to-mp4.appspot.com
@@ -136,21 +153,15 @@ exports.imageToMp4 = functions.storage.object().onFinalize(async (object) => {
             uid: userUid,
             img: imgDownloadUrl,
             mp4: mp4DownloadUrl,
+            error: null,
             datetime: now,
           };
+          functions.logger.error("success data", data);
           await admin.firestore().collection(userUid).add(data);
 
           // 変換処理が終わったらテンポラリファイルを削除
           fs.unlinkSync(tempImageFilePath);
           resolut("ok");
-        })
-        .on("error", (error, stdout, stderr) => {
-          functions.logger.log(error);
-          functions.logger.log(stdout);
-          functions.logger.log(stderr);
-          // 変換できなかった時 エラーコードを追加する
-
-          reject(error);
         })
         .run();
   });
