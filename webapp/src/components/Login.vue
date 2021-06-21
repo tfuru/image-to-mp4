@@ -7,9 +7,9 @@
     </v-row>
     <v-row class="text-center">
       <v-col cols="12">
-        <button class="btn is-light" @click="clickBtnAnonymously">
+        <v-btn text @click="clickBtnAnonymously">
           アカウントを作らずに利用する
-        </button>
+        </v-btn>
       </v-col>
     </v-row>
   </v-container>

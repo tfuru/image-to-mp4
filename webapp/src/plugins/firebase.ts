@@ -34,7 +34,12 @@ export default {
 
     const storageRef = firebase.storage().ref();
     const uploadFileRef = storageRef.child(`${user?.uid}/${file.name}`);
-    uploadFileRef.put(file).then(callback);
+    // aタグ download要素 を有効にするため contentDisposition を設定
+    const metadata = {
+      contentType: file.type,
+      contentDisposition: "attachment",
+    };
+    uploadFileRef.put(file, metadata).then(callback);
   },
   onSnapshot: (
     callback: (

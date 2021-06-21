@@ -6,7 +6,6 @@
   <div v-else>
     <common-header />
     <file-upload />
-    <logout />
   </div>
 </template>
 
@@ -16,7 +15,6 @@ import store from "../store";
 
 import CommonHeader from "@/components/CommonHeader.vue";
 import Login from "@/components/Login.vue";
-import Logout from "@/components/Logout.vue";
 import FileUpload from "@/components/FileUpload.vue";
 
 export default Vue.extend({
@@ -27,7 +25,6 @@ export default Vue.extend({
   components: {
     CommonHeader,
     Login,
-    Logout,
     FileUpload,
   },
   computed: {
