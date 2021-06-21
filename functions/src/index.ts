@@ -89,7 +89,9 @@ exports.imageToMp4 = functions.storage.object().onFinalize(async (object) => {
   // tempFilePath を ffmpg で mp4 に変換 して bucket に アップロードする
   // ffmpeg -r 1 -i 239476.png -loop 0 -vcodec libx264
   //   -pix_fmt yuv420p -r 60 out.mp4
-
+  //
+  //   -g 150 -qcomp 0.7 -qmin 10 -qmax 51 -qdiff 4
+  //   -subq 6 -me_range 16 -i_qfactor 0.714286
   return new Promise((resolut, reject) => {
     ffmpeg(tempImageFilePath)
         .setFfmpegPath(ffmpegPath)
@@ -101,6 +103,14 @@ exports.imageToMp4 = functions.storage.object().onFinalize(async (object) => {
           "-vcodec libx264",
           "-pix_fmt yuv420p",
           "-r 60",
+          "-g 150",
+          "-qcomp 0.7",
+          "-qmin 10",
+          "-qmax 51",
+          "-qdiff 4",
+          "-subq 6",
+          "-me_range 16",
+          "-i_qfactor 0.714286",
         ])
         .on("end", async (error, stdout) => {
           functions.logger.log(stdout);
@@ -138,6 +148,8 @@ exports.imageToMp4 = functions.storage.object().onFinalize(async (object) => {
           functions.logger.log(error);
           functions.logger.log(stdout);
           functions.logger.log(stderr);
+          // 変換できなかった時 エラーコードを追加する
+
           reject(error);
         })
         .run();
