@@ -5,6 +5,13 @@
         <div id="firebaseui-auth-container"></div>
       </v-col>
     </v-row>
+    <v-row class="text-center">
+      <v-col cols="12">
+        <button class="btn is-light" @click="clickBtnAnonymously">
+          アカウントを作らずに利用する
+        </button>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -15,6 +22,8 @@ import "firebase/auth";
 
 import * as firebaseui from "firebaseui-ja";
 import "firebaseui-ja/dist/firebaseui.css";
+
+import PluginsFirebase from "@/plugins/firebase";
 
 export default Vue.extend({
   name: "Login",
@@ -33,9 +42,18 @@ export default Vue.extend({
       ],
       tosUrl: "/terms",
       privacyPolicyUrl: "/privacy",
+      autoUpgradeAnonymousUsers: true,
     };
-    const ui = firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(firebase.auth());
+    const ui =
+      firebaseui.auth.AuthUI.getInstance() ||
+      new firebaseui.auth.AuthUI(firebase.auth());
     ui.start("#firebaseui-auth-container", uiConfig);
+  },
+  methods: {
+    clickBtnAnonymously: async () => {
+      console.log("clickBtnAnonymously");
+      PluginsFirebase.signInAnonymously();
+    },
   },
 });
 </script>
