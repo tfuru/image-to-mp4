@@ -79,11 +79,13 @@ exports.imageToMp4 = functions.storage.object().onFinalize(async (object) => {
   }
 
   const uuid = uuidv4();
+  // contentDisposition: "attachment", は aタグ download要素に対応させるため必要
   const metadata = {
     contentType: "video/mp4",
     metadata: {
       firebaseStorageDownloadTokens: uuid,
     },
+    contentDisposition: "attachment",
   };
   functions.logger.log("metadata", metadata);
 
