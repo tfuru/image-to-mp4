@@ -97,6 +97,9 @@ exports.imageToMp4 = functions.storage.object().onFinalize(async (object) => {
   //
   //   -g 150 -qcomp 0.7 -qmin 10 -qmax 51 -qdiff 4
   //   -subq 6 -me_range 16 -i_qfactor 0.714286
+  //
+  //   ffmpeg -i input.mp4 -vf scale=2048:-2 output.mp4
+
   return new Promise((resolut, reject) => {
     ffmpeg(tempImageFilePath)
         .setFfmpegPath(ffmpegPath)
@@ -108,14 +111,7 @@ exports.imageToMp4 = functions.storage.object().onFinalize(async (object) => {
           "-vcodec libx264",
           "-pix_fmt yuv420p",
           "-r 60",
-          "-g 150",
-          "-qcomp 0.7",
-          "-qmin 10",
-          "-qmax 51",
-          "-qdiff 4",
-          "-subq 6",
-          "-me_range 16",
-          "-i_qfactor 0.714286",
+          "-vf scale=2048:-2",
         ])
         .on("error", async (error, stdout, stderr) => {
           functions.logger.error("error", error);
